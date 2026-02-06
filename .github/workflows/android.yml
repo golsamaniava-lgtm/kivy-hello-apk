@@ -1,4 +1,4 @@
-name: Build Kivy APK (FULL)
+name: Build Kivy APK (FINAL FIX)
 
 on:
   push:
@@ -17,19 +17,28 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Install system packages (EVERYTHING)
+    - name: Set up Java 17 (IMPORTANT)
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: "17"
+
+    - name: Verify Java
+      run: |
+        java -version
+        javac -version
+
+    - name: Install system packages
       run: |
         sudo apt update
         sudo apt install -y \
           git zip unzip curl wget \
-          openjdk-17-jdk \
           autoconf automake libtool pkg-config \
           zlib1g-dev libncurses5-dev libncursesw5-dev \
           libtinfo5 cmake libffi-dev libssl-dev \
-          python3-pip python3-setuptools \
-          file
+          python3-pip python3-setuptools
 
-    - name: Install Android SDK (manual + safe)
+    - name: Install Android SDK (manual)
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
         cd $HOME/android-sdk/cmdline-tools
@@ -43,7 +52,7 @@ jobs:
         echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
         echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-    - name: Install Android components (sdkmanager)
+    - name: Install Android components
       run: |
         yes | sdkmanager --licenses
         sdkmanager \
@@ -56,12 +65,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install cython==0.29.36 buildozer
-
-    - name: Sanity check (git / aidl / java)
-      run: |
-        git --version
-        java -version
-        which aidl || echo "AIDL OK (comes with build-tools)"
 
     - name: Build APK
       run: |
