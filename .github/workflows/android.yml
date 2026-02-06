@@ -1,4 +1,4 @@
-name: Build Kivy APK (FULL AUTO)
+name: Build Kivy APK (FINAL SAFE)
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Install system dependencies
+    - name: Install system dependencies (SAFE)
       run: |
         sudo apt update
         sudo apt install -y \
@@ -25,7 +25,8 @@ jobs:
           openjdk-17-jdk \
           autoconf automake libtool pkg-config \
           zlib1g-dev libncurses5-dev libncursesw5-dev \
-          libtinfo5 cmake libffi-dev libssl-dev \
+          libtinfo6 \
+          cmake libffi-dev libssl-dev \
           python3-pip
 
     - name: Set JAVA_HOME
@@ -33,7 +34,7 @@ jobs:
         echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
         echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
 
-    - name: Install Android SDK (FULL)
+    - name: Install Android SDK
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
         cd $HOME/android-sdk/cmdline-tools
@@ -58,11 +59,11 @@ jobs:
           "build-tools;36.0.0" \
           "ndk;25.2.9519653"
 
-    - name: Verify tools (git / java / aidl)
+    - name: Verify tools
       run: |
         git --version
         java -version
-        find $ANDROID_SDK_ROOT -name aidl
+        find $ANDROID_SDK_ROOT -name aidl | head -n 5
 
     - name: Install Python tools
       run: |
