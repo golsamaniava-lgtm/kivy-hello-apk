@@ -1,7 +1,7 @@
 [app]
 
 # اسم برنامه
-title = MyKivyApp
+title = اIran
 
 # اسم پکیج (فقط حروف کوچیک)
 package.name = mykivyapp
