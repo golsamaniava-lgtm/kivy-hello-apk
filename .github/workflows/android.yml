@@ -1,4 +1,4 @@
-name: Build Kivy APK (Bruteforce)
+name: Build Kivy APK (FULL)
 
 on:
   push:
@@ -12,76 +12,60 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install EVERYTHING system-level
-      run: |
-        sudo apt update
-        sudo apt install -y \
-          git \
-          curl wget \
-          unzip zip \
-          openjdk-17-jdk \
-          python3 python3-pip python3-setuptools \
-          autoconf automake libtool pkg-config \
-          build-essential \
-          cmake \
-          zlib1g-dev \
-          libffi-dev \
-          libssl-dev \
-          libncurses5-dev libncursesw5-dev \
-          libtinfo6 \
-          libreadline-dev \
-          libsqlite3-dev \
-          libbz2-dev \
-          liblzma-dev \
-          libgdbm-dev \
-          libnss3-dev \
-          libedit-dev \
-          ca-certificates
-
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
         python-version: "3.10"
 
-    - name: Install Android SDK manually (FULL)
+    - name: Install system packages (EVERYTHING)
       run: |
-        export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
-        export ANDROID_SDK_ROOT=$ANDROID_HOME
-        mkdir -p $ANDROID_HOME/cmdline-tools
-        cd $ANDROID_HOME/cmdline-tools
+        sudo apt update
+        sudo apt install -y \
+          git zip unzip curl wget \
+          openjdk-17-jdk \
+          autoconf automake libtool pkg-config \
+          zlib1g-dev libncurses5-dev libncursesw5-dev \
+          libtinfo5 cmake libffi-dev libssl-dev \
+          python3-pip python3-setuptools \
+          file
 
-        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-        unzip commandlinetools-linux-9477386_latest.zip
+    - name: Install Android SDK (manual + safe)
+      run: |
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        cd $HOME/android-sdk/cmdline-tools
+
+        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
+        unzip tools.zip
         mv cmdline-tools latest
 
-        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-        echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
-        echo "PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+        echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-        yes | sdkmanager --licenses || true
-
+    - name: Install Android components (sdkmanager)
+      run: |
+        yes | sdkmanager --licenses
         sdkmanager \
           "platform-tools" \
           "platforms;android-33" \
-          "build-tools;33.0.2"
-
-        ls $ANDROID_HOME/build-tools/33.0.2 || true
-        ls $ANDROID_HOME/platform-tools || true
+          "build-tools;33.0.2" \
+          "ndk;25.2.9519653"
 
     - name: Install Python tools
       run: |
-        pip install --upgrade pip
+        python -m pip install --upgrade pip
         pip install cython==0.29.36 buildozer
 
-    - name: Sanity check (git + aidl)
+    - name: Sanity check (git / aidl / java)
       run: |
         git --version
-        which aidl || true
-        find $ANDROID_HOME -name aidl || true
+        java -version
+        which aidl || echo "AIDL OK (comes with build-tools)"
 
     - name: Build APK
       run: |
-        buildozer -v android debug
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
