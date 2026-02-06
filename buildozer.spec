@@ -1,41 +1,36 @@
 [app]
 
-title = Tourism App
-package.name = tourismapp
+title = MyKivyApp
+package.name = mykivyapp
 package.domain = org.example
 
 source.dir = .
-source.include_exts = py,png,jpg,jpeg,ttf,kv
+source.include_exts = py,png,jpg,jpeg,kv,ttf
 
-# فایل اصلی
-entrypoint = main.py
-
-# فایل‌ها و فولدرهای اضافی
-source.include_patterns = Images/*,widgets/*,Far_Nazanin.ttf
-
-# نسخه
 version = 0.1
 
-# نیازمندی‌های پایتون
-requirements = python3,kivy,arabic_reshaper,python-bidi
+requirements = python3,kivy
 
-# حداقل اندروید
+orientation = portrait
+
+fullscreen = 0
+
+icon.filename = %(source.dir)s/icon.png
+presplash.filename = %(source.dir)s/presplash.png
+
+android.permissions = INTERNET
+
+android.api = 33
 android.minapi = 21
+android.sdk = 33
+android.ndk = 25b
+android.accept_sdk_license = True
 
-# معماری‌ها
-android.archs = arm64-v8a,armeabi-v7a
+android.archs = arm64-v8a, armeabi-v7a
 
-# مجوزها (فعلاً هیچی لازم نداری)
-android.permissions =
+android.allow_backup = True
 
-# فول‌اسکرین
-fullscreen = 1
-
-# لاگ کمتر (پایدارتر)
-log_level = 2
-
-
-[buildozer]
+android.private_storage = True
 
 log_level = 2
-warn_on_root = 1
+
