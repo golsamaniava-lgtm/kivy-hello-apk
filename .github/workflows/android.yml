@@ -10,28 +10,23 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    # ---------- System deps ----------
-    - name: Install system dependencies
+    - name: Install system deps
       run: |
         sudo apt update
         sudo apt install -y \
-          zip unzip git \
+          git zip unzip \
           openjdk-17-jdk \
           libffi-dev libssl-dev \
           libtinfo6 \
-          zlib1g-dev \
-          build-essential
+          zlib1g-dev build-essential
 
-    # ---------- Java ----------
     - name: Set JAVA_HOME
       run: |
         echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
         echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
 
-    # ---------- Android SDK ----------
     - name: Install Android SDK
       run: |
         mkdir -p $HOME/android-sdk
@@ -46,12 +41,9 @@ jobs:
         mkdir -p android-sdk/cmdline-tools/latest
         mv cmdline-tools/* android-sdk/cmdline-tools/latest/
 
-    # ---------- Accept licenses ----------
-    - name: Accept Android licenses
-      run: |
-        yes | sdkmanager --licenses
+    - name: Accept licenses
+      run: yes | sdkmanager --licenses
 
-    # ---------- Install SDK components ----------
     - name: Install Android components
       run: |
         sdkmanager \
@@ -59,17 +51,6 @@ jobs:
           "platforms;android-33" \
           "build-tools;33.0.2"
 
-    # ---------- Fix AIDL ----------
-    - name: Fix AIDL path
-      run: |
-        AIDL_PATH=$(find $ANDROID_HOME/build-tools -name aidl | head -n 1)
-        if [ -z "$AIDL_PATH" ]; then
-          echo "AIDL not found"
-          exit 1
-        fi
-        echo "$(dirname $AIDL_PATH)" >> $GITHUB_PATH
-
-    # ---------- Python ----------
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -80,12 +61,10 @@ jobs:
         pip install --upgrade pip
         pip install buildozer cython==0.29.36
 
-    # ---------- Build ----------
     - name: Build APK
       run: |
         buildozer android debug
 
-    # ---------- Upload ----------
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
