@@ -48,11 +48,6 @@ jobs:
           "platforms;android-31" \
           "build-tools;33.0.2"
 
-    - name: Verify AIDL exists
-      run: |
-        ls -la $HOME/android-sdk/build-tools/33.0.2/
-        $HOME/android-sdk/build-tools/33.0.2/aidl version
-
     - name: Install buildozer
       run: |
         python -m pip install --upgrade pip
