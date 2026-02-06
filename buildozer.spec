@@ -1,44 +1,41 @@
 [app]
 
-# اسم برنامه
-title = اIran
+title = Tourism App
+package.name = tourismapp
+package.domain = org.example
 
-# اسم پکیج (فقط حروف کوچیک)
-package.name = mykivyapp
-package.domain = org.test
+source.dir = .
+source.include_exts = py,png,jpg,jpeg,ttf,kv
 
 # فایل اصلی
-source.dir = .
-source.main = main.py
+entrypoint = main.py
 
-# فایل‌هایی که باید برن داخل apk
-source.include_exts = py,kv,png,jpg,jpeg,ttf
-
-# فولدرهایی که داری
-source.include_patterns = image/*,widgets/*
+# فایل‌ها و فولدرهای اضافی
+source.include_patterns = Images/*,widgets/*,Far_Nazanin.ttf
 
 # نسخه
 version = 0.1
 
-# کتابخونه‌ها
-requirements = python3,kivy,python-bidi,arabic-reshaper
+# نیازمندی‌های پایتون
+requirements = python3,kivy,arabic_reshaper,python-bidi
 
-# اندروید
-orientation = portrait
-fullscreen = 1
-
-android.api = 31
+# حداقل اندروید
 android.minapi = 21
-android.ndk = 25b
 
-# معماری (همینو نگه دار)
+# معماری‌ها
 android.archs = arm64-v8a,armeabi-v7a
 
-# جاوا
-android.gradle_dependencies = implementation 'androidx.appcompat:appcompat:1.6.1'
+# مجوزها (فعلاً هیچی لازم نداری)
+android.permissions =
 
-# لاگ بیشتر (برای دیباگ)
+# فول‌اسکرین
+fullscreen = 1
+
+# لاگ کمتر (پایدارتر)
 log_level = 2
 
+
 [buildozer]
-warn_on_root = 0
+
+log_level = 2
+warn_on_root = 1
