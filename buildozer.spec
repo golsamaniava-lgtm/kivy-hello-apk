@@ -9,14 +9,10 @@ source.include_exts = py,png,jpg,jpeg,kv,ttf
 
 version = 0.1
 
-requirements = python3,kivy
+requirements = python3,kivy,arabic_reshaper,python-bidi
 
 orientation = portrait
-
 fullscreen = 0
-
-icon.filename = %(source.dir)s/icon.png
-presplash.filename = %(source.dir)s/presplash.png
 
 android.permissions = INTERNET
 
@@ -29,8 +25,6 @@ android.accept_sdk_license = True
 android.archs = arm64-v8a, armeabi-v7a
 
 android.allow_backup = True
-
 android.private_storage = True
 
 log_level = 2
-
