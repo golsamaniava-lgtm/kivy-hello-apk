@@ -17,11 +17,11 @@ jobs:
         sudo apt update
         sudo apt install -y \
           git \
-          openjdk-17-jdk \
+          openjdk-8-jdk \
           zip unzip \
           autoconf libtool pkg-config \
           zlib1g-dev libncurses5-dev libncursesw5-dev \
-          libtinfo6 \
+          libtinfo5 \
           cmake libffi-dev libssl-dev
 
     - name: Set up Python
@@ -29,12 +29,12 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Install Android SDK
+    - name: Install Android SDK (compatible with Buildozer)
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
         cd $HOME/android-sdk/cmdline-tools
 
-        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
         unzip commandlinetools-linux-*.zip
         mv cmdline-tools latest
 
@@ -45,8 +45,8 @@ jobs:
 
         sdkmanager \
           "platform-tools" \
-          "platforms;android-31" \
-          "build-tools;33.0.2"
+          "platforms;android-29" \
+          "build-tools;30.0.3"
 
     - name: Install buildozer
       run: |
@@ -57,7 +57,7 @@ jobs:
       env:
         ANDROID_HOME: $HOME/android-sdk
         ANDROID_SDK_ROOT: $HOME/android-sdk
-        PATH: /usr/bin:/bin:/usr/local/bin:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin
+        PATH: $HOME/android-sdk/build-tools/30.0.3:$HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin:/usr/bin:/bin
       run: |
         buildozer android debug
 
