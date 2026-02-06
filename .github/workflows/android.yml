@@ -21,6 +21,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y \
+        git \
         openjdk-17-jdk \
         zip unzip \
         autoconf libtool pkg-config \
@@ -32,6 +33,7 @@ jobs:
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
         cd $HOME/android-sdk/cmdline-tools
+
         wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
         unzip commandlinetools-linux-*.zip
         mv cmdline-tools latest
@@ -40,7 +42,10 @@ jobs:
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
 
         yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-31" "build-tools;33.0.2"
+        sdkmanager \
+          "platform-tools" \
+          "platforms;android-31" \
+          "build-tools;33.0.2"
 
     - name: Install buildozer
       run: |
