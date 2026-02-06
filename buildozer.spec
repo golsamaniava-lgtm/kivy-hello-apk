@@ -1,63 +1,44 @@
 [app]
 
-title = IranTourism
-package.name = irantourism
-package.domain = org.example
+# اسم برنامه
+title = MyKivyApp
 
+# اسم پکیج (فقط حروف کوچیک)
+package.name = mykivyapp
+package.domain = org.test
+
+# فایل اصلی
 source.dir = .
-source.include_exts = py,png,jpg,ttf
+source.main = main.py
 
+# فایل‌هایی که باید برن داخل apk
+source.include_exts = py,kv,png,jpg,jpeg,ttf
+
+# فولدرهایی که داری
+source.include_patterns = image/*,widgets/*
+
+# نسخه
 version = 0.1
 
-requirements = python3,kivy==2.3.1,arabic_reshaper,python-bidi
+# کتابخونه‌ها
+requirements = python3,kivy,python-bidi,arabic-reshaper
 
+# اندروید
 orientation = portrait
-
-fullscreen = 0
-
-icon.filename = %(source.dir)s/icon.png
-
-presplash.filename = %(source.dir)s/presplash.png
-
-
-[buildozer]
-
-log_level = 2
-warn_on_root = 1
-
-
-[app:android]
+fullscreen = 1
 
 android.api = 31
 android.minapi = 21
-
-android.sdk = 31
 android.ndk = 25b
 
-android.permissions = INTERNET
-
+# معماری (همینو نگه دار)
 android.archs = arm64-v8a,armeabi-v7a
 
-android.accept_sdk_license = True
+# جاوا
+android.gradle_dependencies = implementation 'androidx.appcompat:appcompat:1.6.1'
 
-android.allow_backup = True
+# لاگ بیشتر (برای دیباگ)
+log_level = 2
 
-android.gradle_dependencies = 
-
-android.enable_androidx = True
-
-android.enable_jetifier = True
-
-android.use_aapt2 = True
-
-android.ndk_api = 21
-
-
-[app:android.gradle]
-
-# خالی بماند
-
-
-[app:android.signing]
-
-# خالی بماند
+[buildozer]
+warn_on_root = 0
