@@ -12,24 +12,24 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
+    - name: Install system dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          git \
+          openjdk-17-jdk \
+          zip unzip \
+          autoconf libtool pkg-config \
+          zlib1g-dev libncurses5-dev libncursesw5-dev \
+          libtinfo6 \
+          cmake libffi-dev libssl-dev
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.10"
 
-    - name: Install system dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y \
-        git \
-        openjdk-17-jdk \
-        zip unzip \
-        autoconf libtool pkg-config \
-        zlib1g-dev libncurses5-dev libncursesw5-dev \
-        libtinfo6 \
-        cmake libffi-dev libssl-dev
-
-    - name: Install Android SDK + accept licenses
+    - name: Install Android SDK
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
         cd $HOME/android-sdk/cmdline-tools
@@ -39,13 +39,19 @@ jobs:
         mv cmdline-tools latest
 
         export ANDROID_HOME=$HOME/android-sdk
-        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 
         yes | sdkmanager --licenses
+
         sdkmanager \
           "platform-tools" \
           "platforms;android-31" \
           "build-tools;33.0.2"
+
+    - name: Verify AIDL exists
+      run: |
+        ls -la $HOME/android-sdk/build-tools/33.0.2/
+        $HOME/android-sdk/build-tools/33.0.2/aidl version
 
     - name: Install buildozer
       run: |
@@ -55,7 +61,8 @@ jobs:
     - name: Build APK
       env:
         ANDROID_HOME: $HOME/android-sdk
-        PATH: /usr/bin:/bin:/usr/local/bin:$HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools
+        ANDROID_SDK_ROOT: $HOME/android-sdk
+        PATH: /usr/bin:/bin:/usr/local/bin:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin
       run: |
         buildozer android debug
 
